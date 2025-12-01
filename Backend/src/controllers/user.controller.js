@@ -13,10 +13,11 @@ import { sendEmail } from "../utils/sendEmail.js";
 
 
 export const createUser = asynchandler(async (req, res) => {
-  const { username, email, password } = req.body;
+  
+  const { username, email, password,phone } = req.body;
 
   // ❌ profile_image shouldn't be checked here yet
-  if (!username || !email || !password) {
+  if (!username || !email || !password || !phone) {
     throw new ApiError(400, "All fields are required");
   }
 
@@ -45,6 +46,7 @@ export const createUser = asynchandler(async (req, res) => {
     username,
     email,
     password,
+    phone,
     profile_image: profile_image.url,
   });
 

@@ -9,6 +9,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { Controller } from "react-hook-form";
+import { toast } from "sonner";
  
 function SignUpPage() {
   const signupSchema = z.object({
@@ -32,40 +33,47 @@ function SignUpPage() {
  
   // ... keep imports and schema
  
-  const onSubmit = async (data) => {
-    // DEBUG: see what you're receiving
-    console.log("submit data:", data);
-    // data.profile_image should be a File (not FileList)
- 
-    const formData = new FormData();
-    formData.append("username", data.username);
-    formData.append("email", data.email);
-    formData.append("phone", data.phone);
-    formData.append("password", data.password);
-    // if profile_image is a File, append it
-    if (data.profile_image instanceof File) {
-      formData.append("profile_image", data.profile_image);
-    } else if (
-      Array.isArray(data.profile_image) &&
-      data.profile_image[0] instanceof File
-    ) {
-      // in case you pass an array
-      formData.append("profile_image", data.profile_image[0]);
-    }
- 
-    try {
-      const response = await axios.post(
-        "http://localhost:8000/api/users/create", // <-- fixed URL (http://)
-        formData,
-        {
-          withCredentials: true
-        }
-      );
-      console.log("response:", response.data);
-    } catch (err) {
-      console.error("upload error:", err.response ?? err);
-    }
-  };
+ const onSubmit = async (data) => {
+  console.log("submit data:", data);
+
+  const formData = new FormData();
+  formData.append("username", data.username);
+  formData.append("email", data.email);
+  formData.append("phone", data.phone);
+  formData.append("password", data.password);
+
+  if (data.profile_image instanceof File) {
+    formData.append("profile_image", data.profile_image);
+  }
+
+  try {
+    const response = await axios.post(
+      "http://localhost:8000/api/users/create",
+      formData,
+      {
+        withCredentials: true
+      }
+    );
+
+    console.log("response:", response.data);
+
+    toast.success(response.data.message || "Signup successful!");
+
+    reset();
+
+  } catch (err) {
+    console.error("upload error:", err.response ?? err);
+
+    const errorMessage =
+      err.response?.data?.message ||
+      err.response?.data?.errors?.email ||
+      err.response?.data?.errors?.username ||
+      "Something went wrong";
+
+    toast.error(errorMessage);
+  }
+};
+
  
   return (
     <div className="main-container mt-16 lg:mt-25  flex items-center justify-center   ">
