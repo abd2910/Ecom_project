@@ -10,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { Controller } from "react-hook-form";
 import { toast } from "sonner";
- 
+
 function SignUpPage() {
   const signupSchema = z.object({
     username: z.string().min(4, "username is required"),
@@ -19,7 +19,7 @@ function SignUpPage() {
     phone: z.string().min(10, "phone number is required"),
     profile_image: z.file(),
   });
- 
+
   const {
     register,
     handleSubmit,
@@ -30,51 +30,49 @@ function SignUpPage() {
     resolver: zodResolver(signupSchema),
     mode: "onSubmit",
   });
- 
+
   // ... keep imports and schema
- 
- const onSubmit = async (data) => {
-  console.log("submit data:", data);
 
-  const formData = new FormData();
-  formData.append("username", data.username);
-  formData.append("email", data.email);
-  formData.append("phone", data.phone);
-  formData.append("password", data.password);
+  const onSubmit = async (data) => {
+    console.log("submit data:", data);
 
-  if (data.profile_image instanceof File) {
-    formData.append("profile_image", data.profile_image);
-  }
+    const formData = new FormData();
+    formData.append("username", data.username);
+    formData.append("email", data.email);
+    formData.append("phone", data.phone);
+    formData.append("password", data.password);
 
-  try {
-    const response = await axios.post(
-      "http://localhost:8000/api/users/create",
-      formData,
-      {
-        withCredentials: true
-      }
-    );
+    if (data.profile_image instanceof File) {
+      formData.append("profile_image", data.profile_image);
+    }
 
-    console.log("response:", response.data);
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/users/create",
+        formData,
+        {
+          withCredentials: true,
+        }
+      );
 
-    toast.success(response.data.message || "Signup successful!");
+      console.log("response:", response.data);
 
-    reset();
+      toast.success(response.data.message || "Signup successful!");
 
-  } catch (err) {
-    console.error("upload error:", err.response ?? err);
+      reset();
+    } catch (err) {
+      console.error("upload error:", err.response ?? err);
 
-    const errorMessage =
-      err.response?.data?.message ||
-      err.response?.data?.errors?.email ||
-      err.response?.data?.errors?.username ||
-      "Something went wrong";
+      const errorMessage =
+        err.response?.data?.message ||
+        err.response?.data?.errors?.email ||
+        err.response?.data?.errors?.username ||
+        "Something went wrong";
 
-    toast.error(errorMessage);
-  }
-};
+      toast.error(errorMessage);
+    }
+  };
 
- 
   return (
     <div className="main-container mt-16 lg:mt-25  flex items-center justify-center   ">
       <div className="main-section">
@@ -83,7 +81,7 @@ function SignUpPage() {
           <h3 className=" text-center !text-2xl sm:!text-3xl !font-bold mb-6 text-gray-800">
             Signup
           </h3>
- 
+
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="">
               <Label htmlFor="username" className="text-gray-700 mb-2">
@@ -101,7 +99,7 @@ function SignUpPage() {
                 </p>
               )}
             </div>
- 
+
             {/* Email */}
             <div>
               <Label htmlFor="email" className="text-gray-700 mb-2">
@@ -119,7 +117,7 @@ function SignUpPage() {
                 </p>
               )}
             </div>
- 
+
             {/* Password */}
             <div>
               <Label htmlFor="password" className="text-gray-700 mb-2">
@@ -137,7 +135,7 @@ function SignUpPage() {
                 </p>
               )}
             </div>
- 
+
             {/* Phone */}
             <div>
               <Label htmlFor="phone" className="text-gray-700 mb-2">
@@ -175,7 +173,7 @@ function SignUpPage() {
                 )}
               />
             </div>
- 
+
             {/* Submit Button */}
             <Button
               type="submit"
@@ -199,5 +197,5 @@ function SignUpPage() {
     </div>
   );
 }
- 
+
 export default SignUpPage;
