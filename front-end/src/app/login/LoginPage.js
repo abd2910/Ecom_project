@@ -6,6 +6,7 @@ import Link from 'next/link'
 import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import axios from 'axios'
+import { toast } from "sonner";
 
 function LoginPage() {
 
@@ -17,13 +18,37 @@ function LoginPage() {
   } = useForm()
 
   const onSubmit = async (data) => {
-    axios.post("http://localhost:8000/api/users/login", data).then(function(res){
-        console.log(res)
-    }).catch(function(err){
-        console.log(err)
-    })
+    try {
+      const res = await axios.post(
+        "http://localhost:8000/api/users/login",
+        data,
+        { withCredentials: true }
+      );
+
+      console.log("LOGIN RESPONSE:", res.data);
+
+      // success toast
+      toast.success(res.data.message || "Login successful!");
+
+      // you can redirect here
+      // router.push("/dashboard");
+
+    } catch (err) {
+      console.log("LOGIN ERROR:", err);
+
+      const backendError =
+        err.response?.data?.message ||
+        err.response?.data?.errors?.email ||
+        err.response?.data?.errors?.password ||
+        "Invalid credentials";
+
+      // error toast
+      toast.error(backendError);
+    }
+  };
+
     
-  }
+  
 
   
   return (
