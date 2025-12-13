@@ -92,9 +92,9 @@ function LoginPage() {
                 placeholder="Enter your password"
                 {...register("password", { required: true })}
                 />
-
+                  <Link href={"/forgot"} className='text-blue-500 !text-sm mt-1'>forgot password</Link>
                  {errors.password && (
-                <p className="text-red-500 !text-sm mt-1">
+                   <p className="text-red-500 !text-sm mt-1">
                   {errors.password.message}
                 </p>
               )}
