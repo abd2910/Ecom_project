@@ -5,8 +5,8 @@ const productSchema=new mongoose.Schema({
       price:{type:Number,required:true},
       product_Image:{type:String,required:true},
       description:{type:String,required:true},
-      rating:{type:String,required:true},
-      owner:{type:mongoose.Schema.Types.ObjectId,ref:"User"},
+      rating:{type:Number,min:0,max:5},
+      // owner:{type:mongoose.Schema.Types.ObjectId,ref:"User"},
       category:{type:mongoose.Schema.Types.ObjectId,ref:"Category"}
 })
 export const Product=mongoose.model("Product",productSchema);
